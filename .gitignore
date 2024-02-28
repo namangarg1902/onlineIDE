@@ -1,4 +1,11 @@
-package-lock.json
-package.json
-node_modules/
+# package-lock.json
+# package.json
+
+
 # Dockerfile
+node_modules/*
+!node_modules/express/
+!node_modules/body-parser/
+!node_modules/compilex/
+!node_modules/nodemon/
+
