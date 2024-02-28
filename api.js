@@ -13,8 +13,9 @@ app.get("/", function (req, res) {
     compiler.flush(function () {
         console.log("deleted")
     })
+    const publicIPAddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     const indexPath = path.join(__dirname, "index.html");
-    res.sendFile(indexPath)
+    res.sendFile(indexPath , { publicIPAddress });
 })
 app.post("/compile", function (req, res) {
     var code = req.body.code
@@ -24,8 +25,9 @@ app.post("/compile", function (req, res) {
 
         if (lang == "C++") {
             if (!input) {
-                var envData = { OS: "linux", cmd: "g++", options: { timeout: 10000 } }; // (uses g++ command to compile )
+                var envData = { OS: "windows", cmd: "g++", options: { timeout: 10000 } }; // (uses g++ command to compile )
                 compiler.compileCPP(envData, code, function (data) {
+                    console.log(data);
                     if (data.output) {
                         res.send(data);
                     }
@@ -35,8 +37,9 @@ app.post("/compile", function (req, res) {
                 });
             }
             else {
-                var envData = { OS: "linux", cmd: "g++", options: { timeout: 10000 } }; // (uses g++ command to compile )
+                var envData = { OS: "windows", cmd: "g++", options: { timeout: 10000 } }; // (uses g++ command to compile )
                 compiler.compileCPPWithInput(envData, code, input, function (data) {
+                    console.log(data);
                     if (data.output) {
                         res.send(data);
                     }
@@ -48,8 +51,9 @@ app.post("/compile", function (req, res) {
         }
         else if (lang == "Java") {
             if (!input) {
-                var envData = { OS: "linux" };
+                var envData = { OS: "windows" };
                 compiler.compileJava(envData, code, function (data) {
+                    console.log(data);
                     if (data.output) {
                         res.send(data);
                     }
@@ -60,9 +64,10 @@ app.post("/compile", function (req, res) {
             }
             else {
                 //if windows  
-                var envData = { OS: "linux" };
+                var envData = { OS: "windows" };
                 //else
                 compiler.compileJavaWithInput(envData, code, input, function (data) {
+                    console.log(data);
                     if (data.output) {
                         res.send(data);
                     }
@@ -76,6 +81,7 @@ app.post("/compile", function (req, res) {
             if (!input) {
                 var envData = { OS: "linux" };
                 compiler.compilePython(envData, code, function (data) {
+                    console.log(data);
                     if (data.output) {
                         res.send(data);
                     }
@@ -85,7 +91,7 @@ app.post("/compile", function (req, res) {
                 });
             }
             else {
-                var envData = { OS: "linux" };
+                var envData = { OS: "windows" };
                 compiler.compilePythonWithInput(envData, code, input, function (data) {
                     if (data.output) {
                         res.send(data);
